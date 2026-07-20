@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nutri-Track — AI-Powered Smart Nutrition & Health Advisor</title>
+  <meta name="description" content="Track your vitals, generate custom diet plans, log daily food, and receive immediate AI coaching to hit your body composition goals.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div id="app-container">
+    <!-- Header Area -->
+    <header>
+      <div class="header-content">
+        <div class="logo-section">
+          <div class="logo-icon">🌿</div>
+          <span class="logo-text">Nutri-Track</span>
+        </div>
+        
+        <nav>
+          <ul class="nav-links" id="nav-links">
+            <li class="active"><a data-view="dashboard-view">Dashboard</a></li>
+            <li><a data-view="diet-view">AI Diet Plan</a></li>
+            <li><a data-view="tracker-view">Food Tracker</a></li>
+            <li><a data-view="profile-view">My Profile</a></li>
+          </ul>
+          
+          <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Light/Dark Theme">☀️</button>
+          <button class="menu-btn" id="menu-btn" aria-label="Open Navigation Menu">☰</button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main>
+      
+      <!-- 1. DASHBOARD VIEW -->
+      <section id="dashboard-view" class="view-panel active-view">
+        <!-- Hero Greetings Banner -->
+        <div class="welcome-hero">
+          <h1 class="welcome-title"><span id="dash-greeting">Welcome, Athlete!</span></h1>
+          <p class="welcome-desc">Your daily vitals are aligned. Check your current caloric allocation, log food, and follow your customized meal plan below.</p>
+        </div>
+
+        <!-- AI Nutrition Coaching Banner -->
+        <div class="ai-banner">
+          <div class="ai-avatar">
+            🤖
+            <div class="ai-avatar-glow"></div>
+          </div>
+          <div class="ai-content">
+            <h3 class="ai-title">Nutri-Track AI Coach</h3>
+            <p class="ai-text" id="dash-advice-placeholder">
+              <span id="dash-ai-advice">Welcome to Nutri-Track! Head over to the Profile section to complete your vitals onboarding and build your tailored nutrition architecture.</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Dashboard Grid Layout -->
+        <div class="dashboard-grid">
+          
+          <!-- Column 1: Progress Indicators -->
+          <div class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <h3 class="card-title">🔥 Caloric Budget</h3>
+            
+            <div class="progress-ring-container">
+              <svg width="130" height="130">
+                <circle stroke="var(--card-border)" stroke-width="8" fill="transparent" r="54" cx="65" cy="65"/>
+                <circle class="progress-ring-circle" stroke="var(--primary)" stroke-width="8" stroke-linecap="round" fill="transparent" r="54" cx="65" cy="65"/>
+              </svg>
+              <div class="progress-text">
+                <span class="progress-number" id="dash-cal-consumed">0</span>
+                <span class="progress-label">of <span id="dash-cal-target">2000</span></span>
+              </div>
+            </div>
+
+            <!-- Macros Linear Progress -->
+            <div class="macro-stats">
+              <div class="macro-box">
+                <span class="macro-name">🥩 Protein</span>
+                <div class="macro-bar-container">
+                  <div class="macro-bar protein" id="dash-p-bar"></div>
+                </div>
+                <span class="macro-val" id="dash-p-val">0g / 150g</span>
+              </div>
+              
+              <div class="macro-box">
+                <span class="macro-name">🌾 Carbs</span>
+                <div class="macro-bar-container">
+                  <div class="macro-bar carbs" id="dash-c-bar"></div>
+                </div>
+                <span class="macro-val" id="dash-c-val">0g / 200g</span>
+              </div>
+              
+              <div class="macro-box">
+                <span class="macro-name">🥑 Fats</span>
+                <div class="macro-bar-container">
+                  <div class="macro-bar fats" id="dash-f-bar"></div>
+                </div>
+                <span class="macro-val" id="dash-f-val">0g / 65g</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Water Tracker & Mini Vitals -->
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            
+            <!-- Water Tracker -->
+            <div class="glass-card water-tracker">
+              <h3 class="card-title" style="margin-bottom:0.25rem;">💧 Hydration Track</h3>
+              <p class="card-subtitle" id="water-count-text">0 / 8 Cups</p>
+              
+              <div class="water-grid">
+                <div class="water-cup" data-index="0">🥛</div>
+                <div class="water-cup" data-index="1">🥛</div>
+                <div class="water-cup" data-index="2">🥛</div>
+                <div class="water-cup" data-index="3">🥛</div>
+                <div class="water-cup" data-index="4">🥛</div>
+                <div class="water-cup" data-index="5">🥛</div>
+                <div class="water-cup" data-index="6">🥛</div>
+                <div class="water-cup" data-index="7">🥛</div>
+              </div>
+            </div>
+
+            <!-- Mini Vitals Indicators -->
+            <div class="glass-card">
+              <h3 class="card-title">📊 Physiological Estimates</h3>
+              <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <div class="stat-card-header">
+                  <span class="stat-card-desc">Basal Metabolic Rate (BMR)</span>
+                  <span id="dash-stat-bmr" style="font-weight: 700;">--</span>
+                </div>
+                <div class="stat-card-header">
+                  <span class="stat-card-desc">Daily Activity Target (TDEE)</span>
+                  <span id="dash-stat-tdee" style="font-weight: 700;">--</span>
+                </div>
+                <div class="stat-card-header">
+                  <span class="stat-card-desc">Calories Remaining Today</span>
+                  <span id="dash-stat-net" style="font-weight: 700; color: var(--primary);">--</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Call to Actions -->
+        <div style="margin-top:2rem; display:flex; gap:1rem; flex-wrap: wrap;">
+          <button class="btn btn-primary" onclick="navigateToView('tracker-view')">✏️ Log Today's Food</button>
+          <button class="btn btn-secondary" onclick="navigateToView('diet-view')">🍽️ View Custom Diet Plan</button>
+        </div>
+      </section>
+
+      
+      <!-- 2. DIET PLAN VIEW -->
+      <section id="diet-view" class="view-panel">
+        <h2 style="font-family: var(--font-heading); margin-bottom: 0.5rem;">🍽️ Your Customized Weekly Diet Plan</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Calculated to match your metabolic rate and wellness goals. Tap weekdays to toggle meals.</p>
+        
+        <!-- Diet Plan Layout -->
+        <div class="diet-plan-layout">
+          
+          <!-- Column 1: Daily Meals list -->
+          <div>
+            <div id="diet-days-tabs" style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 0.5rem;">
+              <!-- Javascript Populated Tabs -->
+            </div>
+            
+            <div class="meal-schedule" id="diet-meals-list">
+              <!-- Javascript Populated Cards -->
+            </div>
+          </div>
+
+          <!-- Column 2: Shopping / Grocery Checklist -->
+          <div class="glass-card">
+            <h3 class="card-title">🛒 Grocery Shopping List</h3>
+            <p class="card-subtitle">Aggregate weekly ingredients to take to the store.</p>
+            <ul class="grocery-list" id="grocery-list-container">
+              <!-- Javascript Checked Items -->
+            </ul>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- 3. FOOD TRACKER VIEW -->
+      <section id="tracker-view" class="view-panel">
+        <h2 style="font-family: var(--font-heading); margin-bottom: 0.5rem;">✏️ Daily Food Intake Log</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Log your meals below. The AI Advisor updates in real-time to suggest what to eat next.</p>
+        
+        <!-- Tracker Layout -->
+        <div class="tracker-layout">
+          
+          <!-- Column 1: Logging Controls & Log Table -->
+          <div>
+            
+            <!-- Food Input Section -->
+            <div class="glass-card" style="margin-bottom: 1.5rem; position: relative;">
+              <h3 class="card-title">🔍 Quick Search Database</h3>
+              <div class="form-group" style="position: relative;">
+                <input type="text" id="tracker-search" placeholder="Type a food (e.g. Avocado, Chicken breast, Pasta, Rice, Banana...)" autocomplete="off">
+                <!-- Search items popout menu -->
+                <div id="tracker-search-results" class="search-results"></div>
+              </div>
+              
+              <div style="text-align: center; margin: 1rem 0; color: var(--text-muted); font-size: 0.85rem; font-weight: bold;">
+                — OR MANUAL METRIC LOG —
+              </div>
+              
+              <!-- Custom Form -->
+              <form id="custom-food-form">
+                <div class="form-group">
+                  <label for="food-name-custom">Food Item Name</label>
+                  <input type="text" id="food-name-custom" placeholder="e.g. Homemade Salad Bowl">
+                </div>
+                <div class="form-row">
+                  <div>
+                    <label for="food-cal-custom">Calories (kcal)</label>
+                    <input type="number" id="food-cal-custom" placeholder="e.g. 250">
+                  </div>
+                  <div>
+                    <label for="food-p-custom">Protein (g)</label>
+                    <input type="number" id="food-p-custom" step="0.1" placeholder="e.g. 15">
+                  </div>
+                  <div>
+                    <label for="food-c-custom">Carbs (g)</label>
+                    <input type="number" id="food-c-custom" step="0.1" placeholder="e.g. 20">
+                  </div>
+                  <div>
+                    <label for="food-f-custom">Fats (g)</label>
+                    <input type="number" id="food-f-custom" step="0.1" placeholder="e.g. 8">
+                  </div>
+                </div>
+                <button type="button" class="btn btn-primary" id="btn-custom-add-food" style="width: 100%;">➕ Add Custom Item</button>
+              </form>
+            </div>
+
+            <!-- Table of Logged Items -->
+            <div class="glass-card">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                <h3 class="card-title" style="margin-bottom:0;">📋 Today's Meals</h3>
+                <button class="btn btn-secondary btn-sm" id="btn-clear-logs">🧹 Clear Today</button>
+              </div>
+
+              <div class="food-log-table-container">
+                <table class="food-log-table">
+                  <thead>
+                    <tr>
+                      <th>Food Eaten</th>
+                      <th>Calories</th>
+                      <th>Protein</th>
+                      <th>Carbs</th>
+                      <th>Fats</th>
+                      <th style="text-align: right;">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="food-log-body">
+                    <!-- Javascript entries -->
+                  </tbody>
+                  <tfoot>
+                    <tr style="border-top:2px solid var(--card-border); font-weight:700;">
+                      <td>Total Intake Today</td>
+                      <td id="total-calories-logged">0 / 2000 kcal</td>
+                      <td id="total-protein-logged">0 / 150g</td>
+                      <td id="total-carbs-logged">0 / 200g</td>
+                      <td id="total-fats-logged">0 / 65g</td>
+                      <td></td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Column 2: Live AI Recommendation Panel -->
+          <div class="ai-recommendation-panel">
+            
+            <!-- Coach Summary Speech Balloon -->
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <div style="display:flex; align-items:center; gap:0.5rem; font-weight:700; color:var(--primary-hover)">
+                <span>🤖 AI Nutrition Coach</span>
+              </div>
+              <div class="ai-feedback-balloon" id="tracker-ai-summary">
+                Add food items to your diary so I can analyze today's macro splits and guide your next choice!
+              </div>
+            </div>
+
+            <!-- Eat Now Box -->
+            <div class="ai-recommendation-card eat">
+              <h4 class="ai-rec-header eat">🟢 Recommendation: Eat Now</h4>
+              <ul class="ai-rec-list eat" id="ai-eat-recs">
+                <!-- Javascript populated recommendations -->
+              </ul>
+            </div>
+
+            <!-- Avoid Now Box -->
+            <div class="ai-recommendation-card avoid">
+              <h4 class="ai-rec-header avoid">🔴 Warning: Avoid Now</h4>
+              <ul class="ai-rec-list avoid" id="ai-avoid-recs">
+                <!-- Javascript populated warnings -->
+              </ul>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      
+      <!-- 4. PROFILE / SETUP VIEW -->
+      <section id="profile-view" class="view-panel">
+        <div class="profile-setup-container glass-card">
+          <h2 style="font-family: var(--font-heading); text-align: center; margin-bottom: 0.5rem;">🏋️ Tailor Your Nutrition</h2>
+          <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">Let our physiological algorithm establish your daily metrics and diet schedules.</p>
+          
+          <!-- Onboarding Stepper Header -->
+          <div class="stepper-container">
+            <div class="step-indicator active">1</div>
+            <div class="step-indicator">2</div>
+            <div class="step-indicator">3</div>
+          </div>
+
+          <form id="profile-form">
+            <!-- STEP 1: Biometrics -->
+            <div class="form-step active">
+              <h3 style="margin-bottom: 1.5rem; font-family: var(--font-heading);">Step 1: Physiological Data</h3>
+              
+              <div class="form-group">
+                <label for="prof-gender">Gender Biological Type</label>
+                <select id="prof-gender">
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="prof-age">Age (years)</label>
+                <input type="number" id="prof-age" min="15" max="100" placeholder="e.g. 26">
+              </div>
+
+              <div class="form-row">
+                <div>
+                  <label for="prof-weight">Weight (kg)</label>
+                  <input type="number" id="prof-weight" min="30" max="250" step="0.1" placeholder="e.g. 78">
+                </div>
+                <div>
+                  <label for="prof-height">Height (cm)</label>
+                  <input type="number" id="prof-height" min="100" max="250" step="0.5" placeholder="e.g. 175">
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 2: Activity & Goal -->
+            <div class="form-step">
+              <h3 style="margin-bottom: 1.5rem; font-family: var(--font-heading);">Step 2: Activity & Objectives</h3>
+
+              <div class="form-group">
+                <label for="prof-activity">Daily Physical Activity Level</label>
+                <select id="prof-activity">
+                  <option value="sedentary">Sedentary (Little to no daily exercise)</option>
+                  <option value="light">Lightly Active (Light exercise/sports 1-3 days/week)</option>
+                  <option value="moderate" selected>Moderately Active (Moderate exercise/sports 3-5 days/week)</option>
+                  <option value="active">Very Active (Hard exercise/sports 6-7 days/week)</option>
+                  <option value="extreme">Extra Active (Extremely active physical job or daily athlete training)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="prof-goal">Primary Fitness Objective</label>
+                <select id="prof-goal">
+                  <option value="lose-fast">Fat Loss (Intense Caloric Deficit, -500 kcal)</option>
+                  <option value="lose-mild" selected>Fat Loss (Sustainable Deficit, -250 kcal)</option>
+                  <option value="maintain">Body Weight Maintenance (Balance, +0 kcal)</option>
+                  <option value="gain-mild">Muscle Gain (Clean Surplus, +250 kcal)</option>
+                  <option value="gain-fast">Muscle Gain (Rapid Growth, +500 kcal)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- STEP 3: Diet Preference -->
+            <div class="form-step">
+              <h3 style="margin-bottom: 1.5rem; font-family: var(--font-heading);">Step 3: Nutrition Style</h3>
+
+              <div class="form-group">
+                <label for="prof-diet">Dietary Restrictions</label>
+                <select id="prof-diet">
+                  <option value="everything">Standard (Includes meats, eggs, fish, dairy)</option>
+                  <option value="vegetarian">Vegetarian (No meat or fish; includes dairy/eggs)</option>
+                  <option value="vegan">Vegan (Strictly plant-based; no animal products)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Form Action Footer Buttons -->
+            <div style="display:flex; justify-content:space-between; margin-top: 2rem; border-top: 1px solid var(--card-border); padding-top: 1.5rem;">
+              <button type="button" class="btn btn-secondary" id="btn-prev-step" style="display:none;">⬅ Back</button>
+              <button type="button" class="btn btn-primary" id="btn-next-step" style="margin-left: auto;">Next ➡</button>
+              <button type="submit" class="btn btn-primary" id="btn-submit-profile" style="display:none; margin-left: auto;">Save & Generate Plan 🎉</button>
+            </div>
+
+          </form>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer Area -->
+    <footer>
+      <div>&copy; 2026 Nutri-Track. Formulated with AI physiology calculators. All rights reserved.</div>
+      <div style="font-size:0.75rem; margin-top:0.25rem; color:var(--text-muted)">Disclaimer: Calculations are scientific estimates based on Mifflin-St Jeor formula. Consult a health professional before starting any calorie deficit or diet plan.</div>
+    </footer>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
